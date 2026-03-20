@@ -16,6 +16,7 @@ venv/
 env/
 ENV/
 .python-version
+!.python-version
 .mypy_cache/
 .pytest_cache/
 .ruff_cache/
