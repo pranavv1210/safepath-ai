@@ -38,7 +38,7 @@ body {
 
 .dashboard-shell {
   min-height: 100vh;
-  padding: 28px;
+  padding: clamp(14px, 2.4vw, 28px);
   display: grid;
   gap: 20px;
   max-width: 1660px;
@@ -791,6 +791,19 @@ body {
 }
 
 @media (max-width: 1200px) {
+  .top-header {
+    grid-template-columns: 1fr;
+  }
+
+  .header-meta,
+  .status-row {
+    justify-content: flex-start;
+  }
+
+  .source-stack {
+    justify-items: start;
+  }
+
   .main-grid {
     grid-template-columns: 1fr;
   }
@@ -801,10 +814,6 @@ body {
 }
 
 @media (max-width: 900px) {
-  .dashboard-shell {
-    padding: 14px;
-  }
-
   .github-link {
     right: 14px;
     top: 14px;
@@ -830,10 +839,6 @@ body {
 
   .top-header {
     padding: 20px;
-  }
-
-  .source-stack {
-    justify-items: start;
   }
 
   .source-badge,
@@ -879,5 +884,180 @@ body {
 
   .coord-value {
     max-width: 62%;
+  }
+}
+
+@media (max-width: 720px) {
+  .dashboard-shell {
+    gap: 16px;
+    padding-top: 78px;
+  }
+
+  .github-link {
+    left: 14px;
+    right: auto;
+    top: 12px;
+  }
+
+  .github-link span {
+    font-size: 11px;
+  }
+
+  .top-header,
+  .viz-panel,
+  .info-card {
+    border-radius: 22px;
+  }
+
+  .viz-panel {
+    padding: 18px;
+  }
+
+  .header-copy h1 {
+    max-width: none;
+  }
+
+  .subtitle,
+  .panel-copy {
+    max-width: none;
+  }
+
+  .signal-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .canvas-stage {
+    aspect-ratio: 4 / 5;
+    min-height: 340px;
+  }
+
+  .canvas-overlay {
+    max-width: calc(100% - 22px);
+    padding: 8px 10px;
+    font-size: 9.5px;
+  }
+
+  .overlay-top-left,
+  .overlay-top-right {
+    top: 10px;
+  }
+
+  .overlay-top-left,
+  .overlay-bottom-left {
+    left: 10px;
+  }
+
+  .overlay-top-right,
+  .map-label {
+    right: 10px;
+  }
+
+  .overlay-bottom-left,
+  .map-label {
+    bottom: 10px;
+  }
+
+  .scenario-box,
+  .timeline-box,
+  .action-row {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .action-row {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .action-button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .coord-row,
+  .pred-head,
+  .metric-row,
+  .info-row {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .coord-value,
+  .info-row strong,
+  .metric-row strong,
+  .metric-tile strong,
+  .stat-card strong {
+    max-width: none;
+    text-align: left;
+  }
+
+  .risk-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .risk-chip {
+    min-width: 0;
+    width: fit-content;
+  }
+}
+
+@media (max-width: 560px) {
+  .dashboard-shell {
+    padding-top: 74px;
+  }
+
+  .top-header {
+    padding: 18px;
+  }
+
+  .status-row {
+    gap: 6px;
+  }
+
+  .status-pill,
+  .legend-item,
+  .risk-chip {
+    padding: 8px 10px;
+  }
+
+  .legend {
+    gap: 8px;
+    justify-content: flex-start;
+  }
+
+  .signal-strip,
+  .metrics-cards,
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .canvas-stage {
+    aspect-ratio: auto;
+    min-height: 300px;
+  }
+
+  .overlay-top-right,
+  .overlay-bottom-left,
+  .map-label {
+    display: none;
+  }
+
+  .overlay-top-left {
+    right: 10px;
+    max-width: none;
+  }
+
+  .live-readout {
+    min-height: 56px;
+    line-height: 1.4;
+  }
+
+  .coord-actions {
+    justify-content: stretch;
+  }
+
+  .mini-button {
+    width: 100%;
+    height: 38px;
   }
 }
