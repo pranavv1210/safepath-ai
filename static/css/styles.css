@@ -49,7 +49,7 @@ body {
 .github-link {
   position: fixed;
   right: 24px;
-  bottom: 24px;
+  top: 24px;
   z-index: 20;
   display: inline-flex;
   align-items: center;
@@ -807,7 +807,7 @@ body {
 
   .github-link {
     right: 14px;
-    bottom: 14px;
+    top: 14px;
     padding: 10px 12px;
   }
 

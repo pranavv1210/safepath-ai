@@ -41,8 +41,8 @@ flowchart TD
     INF --> MODEL[Model Checkpoint<br/>models/trajectory_model.pth]
     API --> RISK[Risk Engine<br/>risk_engine/risk.py]
     INF --> RISK
-    API --> HEALTH[/health]
-    API --> PREDICT[/predict]
+    API --> HEALTH["GET /health"]
+    API --> PREDICT["POST /predict"]
 ```
 
 ### Request Flow
