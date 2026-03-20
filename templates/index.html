@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SafePath AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  </head>
+  <body>
+    <div class="dashboard-shell">
+      <a
+        class="github-link"
+        href="https://github.com/pranavv1210/safepath-ai.git"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Open SafePath AI GitHub repository"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path
+            d="M12 2C6.477 2 2 6.589 2 12.248c0 4.526 2.865 8.367 6.839 9.722.5.096.682-.222.682-.494 0-.244-.009-.89-.014-1.747-2.782.618-3.369-1.391-3.369-1.391-.455-1.177-1.11-1.49-1.11-1.49-.908-.636.069-.623.069-.623 1.004.072 1.532 1.053 1.532 1.053.892 1.566 2.341 1.114 2.91.852.091-.664.349-1.114.635-1.37-2.221-.259-4.555-1.14-4.555-5.074 0-1.121.389-2.038 1.029-2.756-.103-.26-.446-1.304.098-2.719 0 0 .84-.276 2.75 1.053A9.34 9.34 0 0 1 12 6.872c.85.004 1.706.117 2.504.344 1.909-1.329 2.748-1.053 2.748-1.053.546 1.415.203 2.459.1 2.719.64.718 1.027 1.635 1.027 2.756 0 3.944-2.338 4.812-4.566 5.066.359.317.678.944.678 1.903 0 1.374-.012 2.482-.012 2.819 0 .275.18.595.688.493C19.138 20.611 22 16.772 22 12.248 22 6.589 17.523 2 12 2Z"
+          />
+        </svg>
+        <span>GitHub</span>
+      </a>
+
+      <header class="top-header">
+        <div class="header-copy">
+          <h1>SafePath AI</h1>
+          <p class="subtitle">Real-time pedestrian trajectory prediction for fast collision-risk awareness</p>
+        </div>
+
+        <div class="header-meta">
+          <div class="status-row">
+            <span id="live-indicator" class="status-pill">Idle</span>
+            <span id="frame-indicator" class="status-pill muted">Past Window 4 / 4</span>
+          </div>
+          <div class="source-stack">
+            <span class="source-badge">Input: nuScenes pedestrian trajectory stream</span>
+            <span class="source-badge">Mode: simulated live playback at 2 Hz</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="main-grid">
+        <section class="viz-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Trajectory Visualization</p>
+              <h2>Past Context vs Future Intent</h2>
+              <p class="panel-copy">
+                The model receives 4 observed positions, predicts 6 future positions, and scores collision risk
+                across 3 possible futures.
+              </p>
+            </div>
+
+            <div class="legend">
+              <span class="legend-item"><i class="swatch past"></i>Past</span>
+              <span class="legend-item"><i class="swatch safe"></i>Safe</span>
+              <span class="legend-item"><i class="swatch caution"></i>Caution</span>
+              <span class="legend-item"><i class="swatch risk"></i>Risk</span>
+            </div>
+          </div>
+
+          <div class="signal-strip">
+            <article class="signal-card">
+              <span class="signal-label">Observed Window</span>
+              <strong id="header-observed-window">0 / 4 points</strong>
+            </article>
+            <article class="signal-card">
+              <span class="signal-label">Behavior</span>
+              <strong id="header-behavior-chip">Waiting</strong>
+            </article>
+            <article class="signal-card">
+              <span class="signal-label">Top Risk</span>
+              <strong id="header-risk-chip">Low</strong>
+            </article>
+          </div>
+
+          <div class="canvas-stage">
+            <div class="canvas-overlay overlay-top-left">Click to add live points</div>
+            <div class="canvas-overlay overlay-top-right">Latest 4 points are used for prediction</div>
+            <div class="canvas-overlay overlay-bottom-left">Road + crosswalk context is simulated for visualization only</div>
+            <canvas id="trajectory-canvas" width="980" height="620"></canvas>
+            <div class="map-label">Simulated road intersection overlay</div>
+          </div>
+
+          <div class="bottom-controls">
+            <div class="scenario-box">
+              <label for="observation-count">Live Input</label>
+              <div id="observation-count" class="live-readout">Click map to add observed points (0 / 4)</div>
+            </div>
+
+            <div class="timeline-box">
+              <div class="timeline-top">
+                <span>Prediction Reveal</span>
+                <span id="footer-frame-indicator">0 / 6</span>
+              </div>
+              <div class="timeline-track">
+                <div id="timeline-progress" class="timeline-progress"></div>
+                <div id="timeline-thumb" class="timeline-thumb"></div>
+              </div>
+            </div>
+
+            <div class="action-row">
+              <button id="play-button" class="action-button primary" type="button">Run Prediction</button>
+              <button id="step-button" class="action-button" type="button">Next Frame</button>
+              <button id="reset-button" class="action-button ghost" type="button">Reset</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="insights-panel">
+          <section class="info-card">
+            <div class="card-head">
+              <h3>Model Insights</h3>
+            </div>
+
+            <div class="info-list">
+              <div class="info-row">
+                <span class="label">Target</span>
+                <strong id="target-name">Tracked Agent</strong>
+              </div>
+              <div class="info-row">
+                <span class="label">Detected Behavior</span>
+                <strong id="behavior-label">Waiting</strong>
+              </div>
+              <div class="info-row">
+                <span class="label">Speed</span>
+                <strong id="target-velocity">0.0 m/s</strong>
+              </div>
+              <div class="info-row">
+                <span class="label">Direction</span>
+                <strong id="direction-label">Forward</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="info-card">
+            <div class="card-head">
+              <div>
+                <h3>Input Coordinates</h3>
+                <p class="card-subtitle">Latest observed trajectory points</p>
+              </div>
+            </div>
+            <div class="coord-actions">
+              <button id="copy-observed-button" class="mini-button" type="button">Copy</button>
+            </div>
+            <div id="observed-coordinates" class="coord-box"></div>
+          </section>
+
+          <section class="info-card">
+            <div class="card-head">
+              <h3>Collision Outlook</h3>
+            </div>
+
+            <div class="risk-hero">
+              <span id="primary-risk-chip" class="risk-chip risk-low">LOW</span>
+              <div>
+                <p class="risk-title">Current Risk State</p>
+                <p id="status-message" class="risk-copy">Press Run Prediction to generate future paths.</p>
+              </div>
+            </div>
+
+            <div id="loading-indicator" class="loading-indicator hidden">
+              <span class="spinner"></span>
+              Querying model...
+            </div>
+
+            <div class="metric-stack">
+              <div class="metric-row">
+                <span class="label">Collision Probability</span>
+                <strong id="max-collision-probability">0.0%</strong>
+              </div>
+              <div class="progress-track">
+                <div id="collision-progress" class="progress-fill"></div>
+              </div>
+              <div class="metric-grid">
+                <article class="metric-tile">
+                  <span class="label">TTC</span>
+                  <strong id="time-to-collision">No collision window</strong>
+                </article>
+                <article class="metric-tile">
+                  <span class="label">Latency</span>
+                  <strong id="latency-metric">0 ms</strong>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section class="info-card">
+            <div class="card-head">
+              <h3>Future Path Confidence</h3>
+            </div>
+            <div id="path-cards" class="path-cards"></div>
+          </section>
+
+          <section class="info-card">
+            <div class="card-head">
+              <div>
+                <h3>Future Coordinates</h3>
+                <p class="card-subtitle">Forecasted points across candidate paths</p>
+              </div>
+            </div>
+            <div class="coord-actions">
+              <button id="copy-predicted-button" class="mini-button" type="button">Copy</button>
+            </div>
+            <div id="predicted-coordinates" class="coord-box coord-box-large"></div>
+          </section>
+
+          <section class="info-card">
+            <div class="card-head">
+              <h3>Validation Snapshot</h3>
+            </div>
+
+            <div class="metrics-cards">
+              <article class="stat-card">
+                <span class="label">ADE</span>
+                <strong id="ade-metric">0.0000</strong>
+              </article>
+              <article class="stat-card">
+                <span class="label">FDE</span>
+                <strong id="fde-metric">0.0000</strong>
+              </article>
+              <article class="stat-card">
+                <span class="label">Target</span>
+                <strong id="target-name-summary">Tracked Agent</strong>
+              </article>
+              <article class="stat-card">
+                <span class="label">Distance</span>
+                <strong id="target-distance">0.0 m</strong>
+              </article>
+            </div>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  </body>
+  </html>

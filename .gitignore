@@ -1,0 +1,63 @@
+# Python cache and build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.egg-info/
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
+
+# Virtual environments and Python tooling
+.venv/
+venv/
+env/
+ENV/
+.python-version
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.pyre/
+.hypothesis/
+.coverage
+.coverage.*
+htmlcov/
+
+# Notebook and editor noise
+.ipynb_checkpoints/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and local env files
+*.log
+*.tmp
+.env
+.env.*
+!.env.example
+
+# Local datasets and generated ML artifacts
+datasets/
+data/raw/
+data/processed/
+app/checkpoints/
+__pycache__/
+datasets/
+*.pt
+!models/trajectory_model.pth
+
+# Optional experiment outputs
+outputs/
+runs/
+wandb/
+mlruns/
+datasets/
+datasets/v1.0-mini/
