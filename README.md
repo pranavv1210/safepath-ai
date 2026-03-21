@@ -2,6 +2,12 @@
 
 SafePath AI is a Flask + PyTorch project for pedestrian trajectory forecasting and collision-risk analysis. It takes the latest observed trajectory points, predicts multiple possible future paths with an LSTM model, scores risk for each path, and presents the result in a browser dashboard.
 
+## Demo
+
+[![Watch the demo](https://img.youtube.com/vi/yAJtvBthkjw/hqdefault.jpg)](https://youtu.be/yAJtvBthkjw)
+
+Demo video: https://youtu.be/yAJtvBthkjw
+
 ## Team
 
 - Pranav V
@@ -15,12 +21,6 @@ SafePath AI is a Flask + PyTorch project for pedestrian trajectory forecasting a
 - Collision-risk scoring and time-to-collision estimation
 - Interactive canvas visualization
 - Render-ready deployment setup
-
-## Demo
-
-[![Watch the demo](https://img.youtube.com/vi/yAJtvBthkjw/hqdefault.jpg)](https://youtu.be/yAJtvBthkjw)
-
-Demo video: https://youtu.be/yAJtvBthkjw
 
 ## System Overview
 
