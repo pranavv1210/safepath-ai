@@ -1,28 +1,70 @@
-# SafePath AI
+# 🚗 SafePath AI
 
-SafePath AI is a Flask + PyTorch project for pedestrian trajectory forecasting and collision-risk analysis. It takes the latest observed trajectory points, predicts multiple possible future paths with an LSTM model, scores risk for each path, and presents the result in a browser dashboard.
+SafePath AI is a real-time pedestrian trajectory prediction and risk analysis system designed for autonomous driving environments.
 
-## Demo
+It takes **2 seconds of past motion data (x, y coordinates)** and predicts **3 possible future trajectories (next 3 seconds)** using an LSTM-based deep learning model trained on the nuScenes dataset.
+
+The system also estimates **collision risk, probability, and time-to-collision (TTC)** and visualizes everything in an interactive web dashboard.
+
+---
+
+## 🎥 Demo
 
 [![Watch the demo](https://img.youtube.com/vi/yAJtvBthkjw/hqdefault.jpg)](https://youtu.be/yAJtvBthkjw)
 
-Demo video: https://youtu.be/yAJtvBthkjw
+👉 Demo video: https://youtu.be/yAJtvBthkjw
 
-## Team
+---
 
-- Pranav V
-- Shariq Sheikh
+## 👥 Team
 
-## Highlights
+* Pranav V
+* Shariq Sheikh
 
-- Flask backend with HTML/CSS/JS dashboard
-- PyTorch LSTM trajectory forecasting model
-- Multi-modal future path generation
-- Collision-risk scoring and time-to-collision estimation
-- Interactive canvas visualization
-- Render-ready deployment setup
+---
 
-## System Overview
+## 🚀 What This Project Does
+
+SafePath AI solves a key challenge in autonomous driving:
+
+> "Predict where pedestrians and cyclists will move — not just where they are."
+
+### The system:
+
+* Observes past movement (trajectory)
+* Predicts multiple possible future paths
+* Estimates risk of collision
+* Updates predictions continuously (real-time simulation)
+
+---
+
+## ⭐ Key Features
+
+* 🧠 **LSTM-based Temporal Modeling** (sequence prediction)
+* 🔮 **Multi-modal Predictions** (3 possible future paths)
+* ⚠️ **Collision Risk Analysis** (probability + TTC)
+* 📊 **ADE / FDE Metrics for evaluation**
+* 🎯 **Real-time Simulation (2 Hz streaming)**
+* 🖥️ **Interactive Dashboard Visualization**
+* ☁️ **Cloud Deployment Ready (Render)**
+
+---
+
+## 🧠 How It Works (Simple Explanation)
+
+1. User provides **past trajectory (4 points)**
+2. Model processes motion patterns
+3. Predicts **3 possible future paths (6 points each)**
+4. Each path is analyzed for:
+
+   * collision probability
+   * minimum distance
+   * time-to-collision
+5. Results are displayed visually + numerically
+
+---
+
+## 🧩 System Overview
 
 ```mermaid
 flowchart LR
@@ -36,7 +78,9 @@ flowchart LR
     H --> I[Dashboard Visualization]
 ```
 
-## Architecture
+---
+
+## 🏗️ Architecture
 
 ### High-Level Components
 
@@ -51,7 +95,9 @@ flowchart TD
     API --> PREDICT["POST /predict"]
 ```
 
-### Request Flow
+---
+
+### 🔁 Request Flow
 
 ```mermaid
 sequenceDiagram
@@ -74,7 +120,9 @@ sequenceDiagram
     F-->>U: Render graph and metrics
 ```
 
-### Deployment Architecture
+---
+
+### ☁️ Deployment Architecture
 
 ```mermaid
 flowchart LR
@@ -86,7 +134,9 @@ flowchart LR
     Flask --> Model[trajectory_model.pth]
 ```
 
-## Project Structure
+---
+
+## 📁 Project Structure
 
 ```text
 safepath-ai/
@@ -114,181 +164,194 @@ safepath-ai/
 `-- README.md
 ```
 
-## Runtime Pipeline
+---
 
-### 1. Input Window
+## ⚙️ Runtime Pipeline
 
-- Observed steps: `4`
-- Forecast steps: `6`
-- Sampling rate: `2 Hz`
-- Feature format: `[x, y, vx, vy]`
+### 📥 1. Input Window
 
-### 2. Inference
+* Observed steps: `4` (2 seconds)
+* Forecast steps: `6` (3 seconds)
+* Sampling rate: `2 Hz`
+* Input format: `[x, y, vx, vy]`
 
-- Input trajectory is validated
-- Coordinates are shifted into the model’s expected relative frame
-- The LSTM generates multiple candidate futures
-- Predictions are restored to global display coordinates
+---
 
-### 3. Risk Analysis
+### 🤖 2. Inference (Model Prediction)
 
-- Each predicted path is compared against the assumed ego vehicle path
-- Minimum distance and collision likelihood are computed
-- Risk is classified as `LOW`, `MEDIUM`, or `HIGH`
+* Input trajectory is validated
+* Converted to relative coordinates
+* Passed through LSTM encoder-decoder
+* Generates **3 possible future paths**
+* Converted back to global coordinates
 
-### 4. Frontend Rendering
+---
 
-- Past observations are shown on the canvas
-- Predicted paths are rendered in different colors
-- The right panel shows risk, confidence, latency, ADE, and FDE
+### ⚠️ 3. Risk Analysis
 
-## Core Modules
+For each predicted path:
 
-### Backend
+* Compute minimum distance from ego vehicle
+* Estimate collision probability
+* Calculate time-to-collision (TTC)
+* Assign risk level:
 
-- `app/server.py`: Flask app factory, routes, health checks, prediction endpoint
-- `app.py`: local run entrypoint
+  * 🟢 LOW
+  * 🟡 MEDIUM
+  * 🔴 HIGH
 
-### Inference
+---
 
-- `inference/predict.py`: model loading, feature preparation, multimodal forecasting
-- `models/trajectory_model.py`: LSTM encoder-decoder model definition
+### 🖥️ 4. Visualization
 
-### Risk Engine
+Dashboard displays:
 
-- `risk_engine/risk.py`: risk scoring and collision analysis
+* Past trajectory (blue)
+* Predicted paths (green/yellow/red)
+* Coordinate values
+* Risk analysis
+* Model metrics (ADE, FDE, latency)
 
-### Frontend
+---
 
-- `templates/index.html`: dashboard structure
-- `static/css/styles.css`: styling and layout
-- `static/js/app.js`: graph rendering, interactions, and API calls
+## 🧠 Core Modules
 
-## API
+### 🔹 Backend
+
+* `app/server.py` → Flask API and routes
+* `app.py` → Local entry point
+
+---
+
+### 🔹 Inference
+
+* `predict.py` → model inference pipeline
+* `trajectory_model.py` → LSTM model
+
+---
+
+### 🔹 Risk Engine
+
+* `risk.py` → collision scoring logic
+
+---
+
+### 🔹 Frontend
+
+* `index.html` → UI layout
+* `styles.css` → styling
+* `app.js` → logic + visualization
+
+---
+
+## 🔌 API
 
 ### `GET /`
 
-Loads the dashboard UI.
+Loads dashboard UI.
+
+---
 
 ### `GET /health`
-
-Returns service health and whether the model file is available.
-
-Example response:
 
 ```json
 {
   "status": "ok",
-  "model_ready": true,
-  "model_path": "models/trajectory_model.pth"
+  "model_ready": true
 }
 ```
+
+---
 
 ### `POST /predict`
 
-Request body:
+#### Request:
 
 ```json
 {
-  "trajectory": [
-    [0.0, 0.0, 0.0, 0.0],
-    [0.3, 0.1, 0.3, 0.1],
-    [0.6, 0.2, 0.3, 0.1],
-    [0.9, 0.25, 0.3, 0.05]
-  ]
+  "trajectory": [[x, y, vx, vy], ...]
 }
 ```
 
-Response shape:
+---
+
+#### Response:
 
 ```json
 {
-  "paths": [[[1.0, 0.3], [1.2, 0.4]]],
-  "probabilities": [0.34, 0.33, 0.33],
-  "risk": [
-    {
-      "risk_level": "LOW",
-      "collision_probability": 0.1,
-      "min_distance": 2.7,
-      "time_to_collision": null,
-      "intersection": false
-    }
-  ],
+  "paths": [...],
+  "probabilities": [...],
+  "risk": [...],
   "meta": {
-    "path_count": 3,
-    "future_steps": 6,
-    "past_steps": 4,
     "ade": 0.0,
-    "fde": 0.0,
-    "latency_ms": 120.5
+    "fde": 0.0
   }
 }
 ```
 
-## Local Development
+---
 
-### Install
+## 💻 Local Setup
 
 ```bash
 pip install -r requirements.txt
-```
-
-### Run
-
-```bash
 python app.py
 ```
 
 Open:
 
-- `http://127.0.0.1:5000/`
-- `http://127.0.0.1:5000/health`
+* http://127.0.0.1:5000
 
-## Deployment
+---
 
-### Render
+## ☁️ Deployment (Render)
 
-This project is configured for deployment on Render as a Web Service.
-
-Build command:
+### Build:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Start command:
+### Start:
 
 ```bash
 gunicorn app.server:app
 ```
 
-Runtime:
+---
 
-```txt
-python-3.10.13
-```
+## ⚠️ Deployment Notes
 
-### Deployment Notes
+* Dataset NOT required at runtime
+* Only `.pth` model is needed
+* Fully browser-based UI
 
-- No nuScenes dataset is required at runtime
-- The service only needs the pre-trained checkpoint at `models/trajectory_model.pth`
-- Static files are served from `static/`
-- HTML templates are served from `templates/`
-- If the model file is missing, `/predict` returns a safe error and `/health` shows degraded status
+---
 
-## GitHub
+## 🌍 Use Cases
 
-Repository:
+* Autonomous driving systems
+* Smart city safety
+* Traffic monitoring
+* Human behavior prediction
 
-- `https://github.com/pranavv1210/safepath-ai.git`
+---
 
-## Future Improvements
+## 🚀 Future Improvements
 
-- Improve trajectory continuity between observed and predicted windows
-- Add richer model diagnostics and uncertainty visualization
-- Support additional datasets and retraining workflows
-- Add automated tests for the prediction endpoint and dashboard behavior
+* Add social interaction modeling
+* Improve multi-modal diversity
+* Enhance real-time streaming
+* Add live sensor integration
 
-## License
+---
 
-This repository is intended for hackathon use and academic prototyping.
+## 📌 Repository
+
+https://github.com/pranavv1210/safepath-ai.git
+
+---
+
+## 📜 License
+
+For academic and hackathon use.
