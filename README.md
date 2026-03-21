@@ -16,6 +16,12 @@ SafePath AI is a Flask + PyTorch project for pedestrian trajectory forecasting a
 - Interactive canvas visualization
 - Render-ready deployment setup
 
+## Demo
+
+[![Watch the demo](https://img.youtube.com/vi/yAJtvBthkjw/hqdefault.jpg)](https://youtu.be/yAJtvBthkjw)
+
+Demo video: https://youtu.be/yAJtvBthkjw
+
 ## System Overview
 
 ```mermaid
