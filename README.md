@@ -265,6 +265,5 @@ Evaluation was run on the saved checkpoint `models/trajectory_model.pth` using t
 
 ## Notes
 
-- The repository is intended to be publicly accessible during evaluation.
 - The dataset is not required at runtime after the trained checkpoint is available.
 - The deployed system uses Flask, Gunicorn, and Render.
