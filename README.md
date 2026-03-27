@@ -1,70 +1,48 @@
-# 🚗 SafePath AI
+# SafePath AI
 
-SafePath AI is a real-time pedestrian trajectory prediction and risk analysis system designed for autonomous driving environments.
+SafePath AI is a real-time pedestrian trajectory prediction and collision risk analysis system designed for autonomous driving environments.
 
-It takes **2 seconds of past motion data (x, y coordinates)** and predicts **3 possible future trajectories (next 3 seconds)** using an LSTM-based deep learning model trained on the nuScenes dataset.
+It uses 2 seconds of past motion data to predict 3 possible future trajectories for the next 3 seconds using an LSTM-based deep learning model trained on the nuScenes dataset. The system also estimates collision probability, minimum distance, and time-to-collision (TTC), then visualizes the results in an interactive web dashboard.
 
-The system also estimates **collision risk, probability, and time-to-collision (TTC)** and visualizes everything in an interactive web dashboard.
+## Demo Video
 
----
+Demo video: https://youtu.be/yAJtvBthkjw
 
-## 🎥 Demo
+## Team
 
-[![Watch the demo](https://img.youtube.com/vi/yAJtvBthkjw/hqdefault.jpg)](https://youtu.be/yAJtvBthkjw)
+- Pranav V
+- Shariq Sheikh
 
-👉 Demo video: https://youtu.be/yAJtvBthkjw
+## GitHub Repository
 
----
+Repository: https://github.com/pranavv1210/safepath-ai.git
 
-## 👥 Team
+## 1. Project Overview
 
-* Pranav V
-* Shariq Sheikh
+### Problem Statement
 
----
+Autonomous vehicles must not only detect pedestrians and cyclists, but also predict where they are likely to move in the next few seconds. SafePath AI addresses this challenge by forecasting multiple future paths and analyzing possible collision risk in real time.
 
-## 🚀 What This Project Does
+### What the Project Does
 
-SafePath AI solves a key challenge in autonomous driving:
+- Observes past pedestrian motion
+- Predicts multiple possible future trajectories
+- Estimates collision probability and TTC
+- Simulates real-time prediction at 2 Hz
+- Displays outputs in an interactive dashboard
 
-> "Predict where pedestrians and cyclists will move — not just where they are."
+### Key Features
 
-### The system:
+- LSTM-based temporal trajectory modeling
+- Multi-modal prediction with 3 future paths
+- Collision risk scoring with TTC
+- ADE and FDE evaluation metrics
+- Flask-based interactive dashboard
+- Cloud deployment support through Render
 
-* Observes past movement (trajectory)
-* Predicts multiple possible future paths
-* Estimates risk of collision
-* Updates predictions continuously (real-time simulation)
+## 2. Model Architecture
 
----
-
-## ⭐ Key Features
-
-* 🧠 **LSTM-based Temporal Modeling** (sequence prediction)
-* 🔮 **Multi-modal Predictions** (3 possible future paths)
-* ⚠️ **Collision Risk Analysis** (probability + TTC)
-* 📊 **ADE / FDE Metrics for evaluation**
-* 🎯 **Real-time Simulation (2 Hz streaming)**
-* 🖥️ **Interactive Dashboard Visualization**
-* ☁️ **Cloud Deployment Ready (Render)**
-
----
-
-## 🧠 How It Works (Simple Explanation)
-
-1. User provides **past trajectory (4 points)**
-2. Model processes motion patterns
-3. Predicts **3 possible future paths (6 points each)**
-4. Each path is analyzed for:
-
-   * collision probability
-   * minimum distance
-   * time-to-collision
-5. Results are displayed visually + numerically
-
----
-
-## 🧩 System Overview
+### High-Level System Flow
 
 ```mermaid
 flowchart LR
@@ -78,11 +56,7 @@ flowchart LR
     H --> I[Dashboard Visualization]
 ```
 
----
-
-## 🏗️ Architecture
-
-### High-Level Components
+### Architecture Components
 
 ```mermaid
 flowchart TD
@@ -95,9 +69,7 @@ flowchart TD
     API --> PREDICT["POST /predict"]
 ```
 
----
-
-### 🔁 Request Flow
+### Request Flow
 
 ```mermaid
 sequenceDiagram
@@ -120,33 +92,31 @@ sequenceDiagram
     F-->>U: Render graph and metrics
 ```
 
----
+### Runtime Configuration
 
-### ☁️ Deployment Architecture
+- Observed steps: `4`
+- Future steps: `6`
+- Sampling rate: `2 Hz`
+- Input format: `[x, y, vx, vy]`
+- Model type: `LSTM encoder-decoder`
+- Hidden size: `64`
+- Dropout: `0.1`
 
-```mermaid
-flowchart LR
-    Browser --> Render[Render Web Service]
-    Render --> Gunicorn[Gunicorn]
-    Gunicorn --> Flask[Flask App]
-    Flask --> Static[Static Assets]
-    Flask --> Templates[HTML Templates]
-    Flask --> Model[trajectory_model.pth]
-```
-
----
-
-## 📁 Project Structure
+### Project Structure
 
 ```text
 safepath-ai/
 |-- app/
+|   |-- checkpoints/
 |   `-- server.py
+|-- data/
+|   `-- processed/
 |-- inference/
 |   `-- predict.py
 |-- models/
 |   |-- trajectory_model.py
 |   `-- trajectory_model.pth
+|-- preprocessing/
 |-- risk_engine/
 |   `-- risk.py
 |-- static/
@@ -155,104 +125,79 @@ safepath-ai/
 |-- templates/
 |   `-- index.html
 |-- training/
-|-- preprocessing/
 |-- utils/
+|-- visualization/
 |-- app.py
-|-- Procfile
-|-- runtime.txt
 |-- requirements.txt
 `-- README.md
 ```
 
----
+## 3. Dataset Used
 
-## ⚙️ Runtime Pipeline
+### Dataset
 
-### 📥 1. Input Window
+The project uses the public **nuScenes** autonomous driving dataset for pedestrian and cyclist trajectory prediction.
 
-* Observed steps: `4` (2 seconds)
-* Forecast steps: `6` (3 seconds)
-* Sampling rate: `2 Hz`
-* Input format: `[x, y, vx, vy]`
+### Data Representation
 
----
+- Input trajectory window: 4 observed steps
+- Prediction horizon: 6 future steps
+- Features used: `x`, `y`, `vx`, `vy`
+- Processed dataset file: `data/processed/nuscenes_native_sequences.pt`
 
-### 🤖 2. Inference (Model Prediction)
+### Preprocessing Summary
 
-* Input trajectory is validated
-* Converted to relative coordinates
-* Passed through LSTM encoder-decoder
-* Generates **3 possible future paths**
-* Converted back to global coordinates
+- Raw trajectories are cleaned and validated
+- Motion sequences are structured into fixed time windows
+- Position and velocity are used as input features
+- Coordinates are converted to relative form before inference
 
----
+## 4. Setup & Installation Instructions
 
-### ⚠️ 3. Risk Analysis
+### Requirements
 
-For each predicted path:
+- Python 3.11
+- pip
 
-* Compute minimum distance from ego vehicle
-* Estimate collision probability
-* Calculate time-to-collision (TTC)
-* Assign risk level:
+### Install Dependencies
 
-  * 🟢 LOW
-  * 🟡 MEDIUM
-  * 🔴 HIGH
+```bash
+pip install -r requirements.txt
+```
 
----
+## 5. How to Run the Code
 
-### 🖥️ 4. Visualization
+### Run the Web App
 
-Dashboard displays:
+```bash
+python app.py
+```
 
-* Past trajectory (blue)
-* Predicted paths (green/yellow/red)
-* Coordinate values
-* Risk analysis
-* Model metrics (ADE, FDE, latency)
+Open:
 
----
+- http://127.0.0.1:5000
 
-## 🧠 Core Modules
+### Deployment
 
-### 🔹 Backend
+Build command:
 
-* `app/server.py` → Flask API and routes
-* `app.py` → Local entry point
+```bash
+pip install -r requirements.txt
+```
 
----
+Start command:
 
-### 🔹 Inference
+```bash
+gunicorn app.server:app
+```
 
-* `predict.py` → model inference pipeline
-* `trajectory_model.py` → LSTM model
+### API Endpoints
 
----
+#### `GET /`
 
-### 🔹 Risk Engine
+Loads the dashboard UI.
 
-* `risk.py` → collision scoring logic
-
----
-
-### 🔹 Frontend
-
-* `index.html` → UI layout
-* `styles.css` → styling
-* `app.js` → logic + visualization
-
----
-
-## 🔌 API
-
-### `GET /`
-
-Loads dashboard UI.
-
----
-
-### `GET /health`
+#### `GET /health`
 
 ```json
 {
@@ -261,11 +206,9 @@ Loads dashboard UI.
 }
 ```
 
----
+#### `POST /predict`
 
-### `POST /predict`
-
-#### Request:
+Request:
 
 ```json
 {
@@ -273,9 +216,7 @@ Loads dashboard UI.
 }
 ```
 
----
-
-#### Response:
+Response:
 
 ```json
 {
@@ -283,75 +224,47 @@ Loads dashboard UI.
   "probabilities": [...],
   "risk": [...],
   "meta": {
-    "ade": 0.0,
-    "fde": 0.0
+    "ade": 0.7348,
+    "fde": 1.1109,
+    "latency_ms": 0.0
   }
 }
 ```
 
----
+## 6. Example Outputs / Results
 
-## 💻 Local Setup
+### Dashboard Output
 
-```bash
-pip install -r requirements.txt
-python app.py
-```
+The dashboard displays:
 
-Open:
+- Past trajectory
+- Predicted future trajectories
+- Collision probability
+- Minimum distance
+- Time-to-collision
+- ADE, FDE, and latency
 
-* http://127.0.0.1:5000
+### Validation Metrics
 
----
+Evaluation was run on the saved checkpoint `models/trajectory_model.pth` using the processed validation split.
 
-## ☁️ Deployment (Render)
+- Dataset size: `3265`
+- Validation size: `653`
+- Validation batches: `21`
+- Loss: `6.6129`
+- ADE: `0.7348`
+- FDE: `1.1109`
 
-### Build:
+### Evaluation Metrics Visualization
 
-```bash
-pip install -r requirements.txt
-```
+![Evaluation Metrics Summary](visualization/evaluation_metrics_summary.png)
 
-### Start:
+### Sample Trajectory Prediction
 
-```bash
-gunicorn app.server:app
-```
+![Sample Trajectory Prediction](visualization/sample_trajectory_prediction.png)
 
----
+## Notes
 
-## ⚠️ Deployment Notes
-
-* Dataset NOT required at runtime
-* Only `.pth` model is needed
-* Fully browser-based UI
-
----
-
-## 🌍 Use Cases
-
-* Autonomous driving systems
-* Smart city safety
-* Traffic monitoring
-* Human behavior prediction
-
----
-
-## 🚀 Future Improvements
-
-* Add social interaction modeling
-* Improve multi-modal diversity
-* Enhance real-time streaming
-* Add live sensor integration
-
----
-
-## 📌 Repository
-
-https://github.com/pranavv1210/safepath-ai.git
-
----
-
-## 📜 License
-
-For academic and hackathon use.
+- The repository is intended to be publicly accessible during evaluation.
+- The dataset is not required at runtime after the trained checkpoint is available.
+- The deployed system uses Flask, Gunicorn, and Render.
